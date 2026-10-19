@@ -1,0 +1,5 @@
+secuencial 16.3 ms total 20000000 cajon0 1249613 coincide
+carrera 119.6 ms total 17103051 cajon0 1068042 DIFIERE
+atomic 221.6 ms total 20000000 cajon0 1249613 coincide
+critical 2138.5 ms total 20000000 cajon0 1249613 coincide
+reduccion 4.1 ms total 20000000 cajon0 1249613 coincide

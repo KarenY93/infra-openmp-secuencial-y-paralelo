@@ -43,6 +43,31 @@ Resumen secuencial(const vector<int> &v) {
 // recorrido sigue siendo secuencial; lo que se reparte son los tres trabajos.
 Resumen con_secciones(const vector<int> &v) {
   Resumen r{0, INT_MIN, 0};
+#pragma omp parallel sections
+  {
+#pragma omp section
+    {
+      long suma = 0;
+      for (size_t i = 0; i < v.size(); i++) suma += v[i];
+#pragma omp critical
+      r.suma += suma;
+    }
+#pragma omp section
+    {
+      int maximo = INT_MIN;
+      for (size_t i = 0; i < v.size(); i++) maximo = max(maximo, v[i]);
+#pragma omp critical
+      r.maximo = max(r.maximo, maximo);
+    }
+#pragma omp section
+    {
+      long mayores = 0;
+      for (size_t i = 0; i < v.size(); i++)
+        if (v[i] > UMBRAL) mayores++;
+#pragma omp critical
+      r.mayores += mayores;
+    }
+  }
   return r;
 }
 
@@ -50,8 +75,21 @@ Resumen con_secciones(const vector<int> &v) {
 // parallel for con tres reducciones, una por resultado. La del máximo usa el
 // operador max.
 Resumen en_una_pasada(const vector<int> &v) {
-  Resumen r{0, INT_MIN, 0};
-  return r;
+    long suma = 0;
+    int maximo = INT_MIN;
+    long mayores = 0;
+
+    #pragma omp parallel for reduction(+:suma,mayores) reduction(max:maximo)
+    for (size_t i = 0; i < v.size(); i++) {
+        suma += v[i];
+        maximo = max(maximo, v[i]);
+
+        if (v[i] > UMBRAL) {
+            mayores++;
+        }
+    }
+
+    return Resumen{suma, maximo, mayores};
 }
 
 int main() {

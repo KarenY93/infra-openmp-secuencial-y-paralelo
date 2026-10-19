@@ -1,0 +1,5 @@
+secuencial n 100000000 204.9 ms suma 3600000000
+hilos 1 n 100000000 212.3 ms suma 3600000000 aceleracion 0.97 eficiencia 0.97
+hilos 2 n 100000000 152.4 ms suma 3600000000 aceleracion 1.35 eficiencia 0.67
+hilos 4 n 100000000 128.7 ms suma 3600000000 aceleracion 1.59 eficiencia 0.40
+hilos 8 n 100000000 137.6 ms suma 3600000000 aceleracion 1.49 eficiencia 0.19

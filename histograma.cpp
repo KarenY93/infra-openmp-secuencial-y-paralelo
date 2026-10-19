@@ -40,12 +40,24 @@ vector<long> con_carrera(const vector<unsigned char> &v) {
 // TODO: cada incremento es una operación atómica.
 vector<long> con_atomic(const vector<unsigned char> &v) {
   vector<long> cuentas(CAJONES, 0);
+#pragma omp parallel for
+  for (size_t i = 0; i < v.size(); i++) {
+#pragma omp atomic
+    cuentas[v[i]]++;
+  }
   return cuentas;
 }
 
 // TODO: cada incremento entra a una sección crítica.
 vector<long> con_critical(const vector<unsigned char> &v) {
   vector<long> cuentas(CAJONES, 0);
+#pragma omp parallel for
+  for (size_t i = 0; i < v.size(); i++) {
+#pragma omp critical
+    {
+      cuentas[v[i]]++;
+    }
+  }
   return cuentas;
 }
 
@@ -55,6 +67,14 @@ vector<long> con_critical(const vector<unsigned char> &v) {
 // una sección crítica al terminar.
 vector<long> con_reduccion(const vector<unsigned char> &v) {
   vector<long> cuentas(CAJONES, 0);
+#pragma omp parallel
+  {
+    vector<long> local(CAJONES, 0);
+#pragma omp for
+    for (size_t i = 0; i < v.size(); i++) local[v[i]]++;
+#pragma omp critical
+    for (int j = 0; j < CAJONES; j++) cuentas[j] += local[j];
+  }
   return cuentas;
 }
 

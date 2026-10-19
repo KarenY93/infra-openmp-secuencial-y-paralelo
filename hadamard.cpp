@@ -26,7 +26,16 @@ long secuencial(const vector<int> &u, const vector<int> &v, vector<int> &w) {
 // hilos acumulan sobre la misma variable, y sin la cláusula el resultado
 // sale mal.
 long paralelo(const vector<int> &u, const vector<int> &v, vector<int> &w) {
-  return 0;
+  size_t n = u.size();
+  long suma = 0;
+
+#pragma omp parallel for
+  for (size_t i = 0; i < n; i++) w[i] = u[i] * v[i];
+
+#pragma omp parallel for reduction(+ : suma)
+  for (size_t i = 0; i < n; i++) suma += w[i];
+
+  return suma;
 }
 
 int main(int argc, char **argv) {

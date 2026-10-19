@@ -38,13 +38,19 @@ long bloques(Patron costo) {
 // TODO: por turnos. El hilo h hace las iteraciones h, h + 4, h + 8, ...
 // Es una cláusula schedule con un tamaño de bloque.
 long turnos(Patron costo) {
-  return 0;
+  long total = 0;
+#pragma omp parallel for schedule(static, 1) reduction(+ : total)
+  for (int i = 0; i < TAREAS; i++) total += trabajo(costo(i));
+  return total;
 }
 
 // TODO: por demanda. La siguiente iteración libre se la lleva el hilo que se
 // desocupa. También es una cláusula schedule.
 long demanda(Patron costo) {
-  return 0;
+  long total = 0;
+#pragma omp parallel for schedule(dynamic) reduction(+ : total)
+  for (int i = 0; i < TAREAS; i++) total += trabajo(costo(i));
+  return total;
 }
 
 int main() {
